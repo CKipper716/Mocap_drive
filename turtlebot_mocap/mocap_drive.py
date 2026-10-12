@@ -46,8 +46,8 @@ def velocity(robot, goal, stop_distance, tolerance):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--robot-id', type=int, default=211)
-    parser.add_argument('--goal-id', type=int, required=True)
+    parser.add_argument('--robot-id', type=int, default=67)
+    parser.add_argument('--goal-id', type=int, default=69)
     parser.add_argument('--client-ip', default='192.168.0.232')
     parser.add_argument('--server-ip', default='192.168.0.245')
     parser.add_argument('--topic', default='/cmd_vel')
@@ -77,6 +77,8 @@ def main():
     signal.signal(signal.SIGTERM, lambda *_: stopping.set())
     node = rclpy.create_node('mocap_drive')
     publisher = node.create_publisher(Twist, args.topic, 1)
+    node.get_logger().info(
+        f'Tracking robot {args.robot_id} toward object {args.goal_id} at 20 Hz.')
     poses = {}
     lock = threading.Lock()
     client = NatNetClient()

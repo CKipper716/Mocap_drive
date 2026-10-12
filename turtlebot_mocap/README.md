@@ -6,7 +6,8 @@ with heading corrections, and slows down near the goal. It commands at 20 Hz,
 caps forward speed at 0.10 m/s and turning at 0.5 rad/s, and stops within 5 cm
 of the target by default. That is a configured tolerance, not measured hardware
 accuracy. Once reached, it keeps publishing zero velocity until you stop it.
-Goal orientation is ignored. Keep the goal stationary during a run.
+Both positions are refreshed throughout the drive; each control update uses the
+latest robot pose and target position. Goal orientation is ignored. Keep the goal stationary during a run.
 
 ## Files and settings
 
@@ -17,8 +18,8 @@ originals were not edited. No manual client patch is needed.
 Run on the ROS 2 Humble Linux computer with network access to both Motive and
 the robot; ROS 2 and the TurtleBot3 packages must already be installed.
 
-- Robot ID: **211**.
-- Goal ID: **GOAL_ID_HERE** — replace this placeholder once known.
+- Robot ID: **67**.
+- Goal ID: **69**.
 - Client IP: **192.168.0.232**; must belong to the computer running this script.
 - Motive server IP: **192.168.0.245**, multicast enabled.
 - Velocity topic: **/cmd_vel**, type **geometry_msgs/msg/Twist**.
@@ -77,10 +78,10 @@ ros2 topic info /cmd_vel
 It should have a robot subscriber and type `geometry_msgs/msg/Twist`. Stop
 teleoperation/Nav2 or other velocity-command publishers before this controller.
 In Motive, enable live rigid-body streaming for both objects. Then run from the
-folder containing the script, replacing GOAL_ID_HERE with the actual integer ID:
+folder containing the script. Robot 67 and target object 69 are the defaults:
 
 ```bash
-python3 mocap_drive.py --goal-id GOAL_ID_HERE
+python3 mocap_drive.py
 ```
 
 For a physical goal object occupying floor space, choose enough separation for
@@ -88,7 +89,7 @@ both objects' dimensions. For example, to stop about 40 cm between the two
 rigid-body origins (plus the 5 cm tolerance):
 
 ```bash
-python3 mocap_drive.py --goal-id GOAL_ID_HERE --stop-distance 0.40
+python3 mocap_drive.py --stop-distance 0.40
 ```
 
 Without `--stop-distance`, the robot aims to put its own origin at the goal's
